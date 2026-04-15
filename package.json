@@ -1,0 +1,84 @@
+{
+  "name": "@omnixys/cache",
+  "version": "0.1.0",
+  "type": "module",
+  "private": false,
+  "packageManager": "pnpm@10.33.0",
+  "description": "A caching library for NestJS applications, providing decorators and utilities to easily cache method results and manage cache entries.",
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "files": [
+    "dist"
+  ],
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "import": "./dist/index.js"
+    },
+    "./producer": {
+      "types": "./dist/producer/index.d.ts",
+      "import": "./dist/producer/index.js"
+    },
+    "./consumer": {
+      "types": "./dist/consumer/index.d.ts",
+      "import": "./dist/consumer/index.js"
+    },
+    "./core": "./dist/core/index.js",
+    "./decorators": "./dist/decorators/index.js",
+    "./types": "./dist/types/index.js"
+  },
+  "publishConfig": {
+    "registry": "https://npm.pkg.github.com"
+  },
+  "scripts": {
+    "build": "tsc -p tsconfig.json",
+    "clean": "rimraf dist",
+    "build:tsup": "tsup src/index.ts --format esm,cjs --dts",
+    "patch": "pnpm version patch",
+    "release": "semantic-release",
+    "dev": "tsc -w",
+    "format": "prettier --cache --write \"src/**/*.{ts,js,json,prisma,md,yaml}\"",
+    "link": "pnpm link --global"
+  },
+  "keywords": [
+    "omnixys",
+    "contracts",
+    "microservices"
+  ],
+  "license": "GPL-3.0-or-later",
+  "dependencies": {
+    "@valkey/client": "^1.0.0"
+  },
+  "devDependencies": {
+    "@commitlint/cli": "^20.5.0",
+    "@commitlint/config-conventional": "^20.5.0",
+    "@eslint/eslintrc": "^3.3.5",
+    "@eslint/js": "^10.0.1",
+    "@nestjs/cli": "^11.0.21",
+    "@nestjs/common": "latest",
+    "@omnixys/observability": "^1.0.0",
+    "@omnixys/shared": "^1.0.0",
+    "@semantic-release/changelog": "^6.0.3",
+    "@semantic-release/commit-analyzer": "^13.0.1",
+    "@semantic-release/git": "^10.0.1",
+    "@semantic-release/github": "^12.0.6",
+    "@semantic-release/npm": "^13.1.5",
+    "@semantic-release/release-notes-generator": "^14.1.0",
+    "@swc/core": "^1.15.21",
+    "depcheck": "^1.4.7",
+    "execa": "^9.6.1",
+    "lint-staged": "^16.4.0",
+    "prettier": "^3.8.1",
+    "prettier-plugin-organize-imports": "^4.3.0",
+    "prettier-plugin-sort-imports": "^1.8.11",
+    "semantic-release": "^25.0.3",
+    "ts-morph": "^28.0.0",
+    "tsup": "^8.5.1",
+    "tsx": "^4.21.0"
+  },
+  "peerDependencies": {
+    "@nestjs/common": "^11.1.17",
+    "@omnixys/observability": "^1.0.0",
+    "@omnixys/shared": "^1.0.0"
+  }
+}
