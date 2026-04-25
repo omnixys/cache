@@ -26,6 +26,9 @@ jobs:
       - uses: actions/checkout@v6
         with:
           fetch-depth: 0
+      - run: pnpm config get @omnixys:registry
+      - run: pnpm config get registry
+      - run: cat ~/.npmrc
 
       - name: Setup npm auth
         run: |
