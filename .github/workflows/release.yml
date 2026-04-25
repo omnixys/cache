@@ -27,10 +27,12 @@ jobs:
         with:
           fetch-depth: 0
 
-      - name: Setup npm auth
+      - name: Setup npm auth (final)
         run: |
+          echo "registry=https://registry.npmjs.org/" >> ~/.npmrc
           echo "@omnixys:registry=https://npm.pkg.github.com" >> ~/.npmrc
           echo "//npm.pkg.github.com/:_authToken=${NODE_AUTH_TOKEN}" >> ~/.npmrc
+          echo "//npm.pkg.github.com/:always-auth=true" >> ~/.npmrc
         env:
           NODE_AUTH_TOKEN: ${{ secrets.OMNIXYS_TOKEN }}
 
@@ -45,10 +47,6 @@ jobs:
         with:
           node-version: ${{ matrix.node-version }}
           cache: 'pnpm'
-
-      - run: pnpm config get @omnixys:registry
-      - run: pnpm config get registry
-      - run: cat ~/.npmrc
 
       - name: 📦 Install dependencies
         run: pnpm install --frozen-lockfile
