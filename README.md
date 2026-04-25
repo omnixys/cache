@@ -6,51 +6,6 @@ This package provides a fully integrated Cache event system for NestJS applicati
 
 The package is designed as a reusable infrastructure layer for the Omnixys platform.
 
-
-# Installation
-
-```bash
-pnpm add @omnixys/cache
-````
-
----
-
-# Basic Usage
-
-## Register Cache Module
-
-```ts
-import { CacheModule } from "@omnixys/cache";
-
-@Module({
-  imports: [
-    CacheModule.forRoot({
-      clientId: "invitation-service",
-      brokers: ["localhost:9092"],
-      groupId: "invitation-consumer",
-    }),
-  ],
-})
-export class AppModule {}
-```
-
----
-
-# Publishing Events
-
-Use the `CacheProducerService` to publish events.
-
-```ts
-import { CacheProducerService, CacheTopics } from "@omnixys/cache";
-
-@Injectable()
-export class InvitationPublisher {
-  constructor(private readonly cache: CacheProducerService) {}
-
-  async deleteInvitation(invitationId: string) {
-    await this.cache.send(
-      CacheTopics.invitation.deleteInvitation,
-      {
         invitationId
       },
       "invitation-service"
