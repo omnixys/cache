@@ -3,6 +3,12 @@
 All notable changes in this project will be documented in this file.
 
 
+## [2.0.0](https://github.com/omnixys/cache/compare/v1.0.0...v2.0.0) (2026-04-25)
+
+### Delay-job
+
+* **Delay-job:** redesign delayed job system using stream-based ([](https://github.com/omnixys/cache/commit/5c086ce43e8eb1cd9db28cff002b01b66d32d626))
+
 ## 1.0.0 (2026-04-25)
 
 ### ⚠ BREAKING CHANGE
