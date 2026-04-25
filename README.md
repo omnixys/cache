@@ -6,21 +6,6 @@ This package provides a fully integrated Cache event system for NestJS applicati
 
 The package is designed as a reusable infrastructure layer for the Omnixys platform.
 
----
-
-# Features
-
-- Configurable Cache client via `CacheModule.forRoot()`
-- Typed Cache event registry (topic → payload)
-- Decorator-based event handlers
-- Automatic handler discovery
-- Central Cache topic registry
-- Standardized event envelope
-- Trace propagation via Cache headers
-- Graceful shutdown handling
-- Production-ready CacheJS configuration
-
----
 
 # Installation
 
