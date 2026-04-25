@@ -1,3 +1,6 @@
+import { DelayedJobRegistryService } from '../delay/delayed-job-registry.service.js';
+import { DelayedJobService } from '../delay/delayed-job.service.js';
+import { DelayedJobWorker } from '../delay/delayed-job.worker.js';
 import { ValkeyLockService } from '../service/valkey-lock.service.js';
 import { ValkeyPubSubService } from '../service/valkey-pubsub.service.js';
 import { ValkeyRateLimitService } from '../service/valkey-rate-limit.service.js';
@@ -16,8 +19,19 @@ import {
   type ValkeyModuleOptionsFactory,
 } from './cache-options.js';
 import { CacheSerializer, JsonCacheSerializer } from './cache-serializer.js';
-import { DynamicModule, Global, Module, Provider, type Type } from '@nestjs/common';
-import { CacheMetricsService, CacheObservabilityService, ObservabilityModule } from '@omnixys/observability';
+import {
+  DynamicModule,
+  Global,
+  Module,
+  Provider,
+  type Type,
+} from '@nestjs/common';
+import { DiscoveryModule } from '@nestjs/core';
+import {
+  CacheMetricsService,
+  CacheObservabilityService,
+  ObservabilityModule,
+} from '@omnixys/observability';
 import { createClient, type ValkeyClientType } from '@valkey/client';
 
 function buildClientOptions(options: ValkeyModuleOptions) {
@@ -67,6 +81,9 @@ function createBaseProviders(): Provider[] {
     ValkeyPubSubService,
     CacheObservabilityService,
     CacheMetricsService,
+    DelayedJobService,
+    DelayedJobWorker,
+    DelayedJobRegistryService,
   ];
 }
 
@@ -174,14 +191,19 @@ function createAsyncClientProviders(): Provider[] {
 @Module({})
 export class ValkeyModule {
   static forRoot(options: ValkeyModuleOptions): DynamicModule {
+    const workerProviders: Provider[] = options.worker
+      ? [DelayedJobWorker]
+      : [];
+
     const providers = [
       ...createSyncClientProviders(options),
       ...createBaseProviders(),
+      ...workerProviders,
     ];
 
     return {
       module: ValkeyModule,
-      imports: [ObservabilityModule],
+      imports: [ObservabilityModule, DiscoveryModule],
       providers,
       exports: [
         VALKEY_OPTIONS,
@@ -195,6 +217,7 @@ export class ValkeyModule {
         ValkeyStreamService,
         ValkeyPubSubService,
         CacheMetricsService,
+        DelayedJobService,
       ],
     };
   }
@@ -214,7 +237,11 @@ export class ValkeyModule {
 
     return {
       module: ValkeyModule,
-      imports: [...(options.imports ?? []), ObservabilityModule],
+      imports: [
+        ...(options.imports ?? []),
+        ObservabilityModule,
+        DiscoveryModule,
+      ],
       providers,
       exports: [
         VALKEY_OPTIONS,
@@ -228,6 +255,7 @@ export class ValkeyModule {
         ValkeyStreamService,
         ValkeyPubSubService,
         CacheObservabilityService,
+        DelayedJobService,
       ],
     };
   }

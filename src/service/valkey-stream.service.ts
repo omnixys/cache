@@ -44,13 +44,13 @@ export class ValkeyStreamService {
     });
   }
 
-  async consume(
+  async consume<T = unknown>(
     stream: string,
     group: string,
     consumer: string,
     count = 10,
     blockMs = 5000,
-  ): Promise<Array<StreamMessage>> {
+  ): Promise<Array<StreamMessage<T>>> {
     return this.observability.trace('stream.consume', stream, async (span) => {
       span?.setAttribute('cache.stream', stream);
       span?.setAttribute('cache.stream.group', group);
@@ -75,7 +75,7 @@ export class ValkeyStreamService {
       return response.flatMap((entry) => {
         return entry.messages.map((message) => ({
           id: message.id,
-          data: JSON.parse(message.message.data),
+          data: JSON.parse(message.message.data) as T,
         }));
       });
     });

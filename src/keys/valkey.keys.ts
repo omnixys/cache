@@ -76,4 +76,6 @@ export const ValkeyKey = {
   magicLinkToken: createKey('auth:magic'),
 
   qrReply: createKey('qr:replay'),
+
+  userAutoDelete: createKey('user:auto-delete'),
 } as const;

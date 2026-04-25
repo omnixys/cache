@@ -1,0 +1,2 @@
+export const DELAYED_JOB_HANDLER = Symbol('DELAYED_JOB_HANDLER');
+export const DELAYED_JOB_METADATA = Symbol('DELAYED_JOB_METADATA');

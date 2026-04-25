@@ -20,6 +20,7 @@ export interface ValkeyModuleOptions {
   keyPrefix?: string;
   pubSub?: ValkeyPubSubOptions;
   streams?: ValkeyStreamOptions;
+  worker?: boolean;
 }
 
 export interface ValkeyModuleOptionsFactory {
