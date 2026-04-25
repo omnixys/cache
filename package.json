@@ -58,7 +58,7 @@
     "@nestjs/common": "latest",
     "@nestjs/core": "^11.1.19",
     "@omnixys/observability": "^1.0.0",
-    "@omnixys/shared": "^1.0.1",
+    "@omnixys/shared": "^1.0.0",
     "@omnixys/security": "^1.0.0",
     "@semantic-release/changelog": "^6.0.3",
     "@semantic-release/commit-analyzer": "^13.0.1",
