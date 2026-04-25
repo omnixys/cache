@@ -27,15 +27,6 @@ jobs:
         with:
           fetch-depth: 0
 
-      - name: Setup npm auth (final)
-        run: |
-          echo "registry=https://registry.npmjs.org/" >> ~/.npmrc
-          echo "@omnixys:registry=https://npm.pkg.github.com" >> ~/.npmrc
-          echo "//npm.pkg.github.com/:_authToken=${NODE_AUTH_TOKEN}" >> ~/.npmrc
-          echo "//npm.pkg.github.com/:always-auth=true" >> ~/.npmrc
-        env:
-          NODE_AUTH_TOKEN: ${{ secrets.OMNIXYS_TOKEN }}
-
 
       - name: ⚙️ Enable Corepack (pnpm)
         run: |
@@ -47,6 +38,13 @@ jobs:
         with:
           node-version: ${{ matrix.node-version }}
           cache: 'pnpm'
+
+      - name: Setup npm registry auth
+        run: |
+          echo "@omnixys:registry=https://npm.pkg.github.com" >> .npmrc
+          echo "//npm.pkg.github.com/:_authToken=${OMNIXYS_TOKEN}" >> .npmrc
+        env:
+          OMNIXYS_TOKEN: ${{ secrets.OMNIXYS_TOKEN }}
 
       - name: 📦 Install dependencies
         run: pnpm install --frozen-lockfile
