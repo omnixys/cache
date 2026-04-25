@@ -3,7 +3,6 @@ lockfileVersion: '9.0'
 settings:
   autoInstallPeers: true
   excludeLinksFromLockfile: false
-  lockfileIncludeTarballUrl: true
 
 importers:
 
@@ -835,7 +834,7 @@ packages:
       fastify: ^5.8.2
 
   '@omnixys/security@1.0.0':
-    resolution: {integrity: sha512-H1HH3BpTaqGILFWPIluUnb3XmYjcHcM/fgTeXjfTN4ZoYeLVuRLQLXmy3IEy/XGSD5LNL3z2C60MnA0Oo4Kd2A==, tarball: https://npm.pkg.github.com/download/@omnixys/security/1.0.0/084369417f86c13b1a155370b8b36a32f400e223}
+    resolution: {integrity: sha512-N7kL3zw0CSfhJ92k9gUn5cDRyhVzg4Ad+LZ42zYGAMKK9yWbNFwz1nFJsZV/RqmfY9HbfLoA7lyIetX1sZwKMQ==, tarball: https://npm.pkg.github.com/download/@omnixys/security/1.0.0/7b41436b66c35187380c654cc577786a5b8b4ca8}
     peerDependencies:
       '@nestjs/common': ^10 || ^11
       '@nestjs/core': ^10 || ^11
