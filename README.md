@@ -1,17 +1,8 @@
-# @omnixys/kafka
+# @omnixys/cache
 
-Kafka infrastructure module for Omnixys microservices.
+Cache infrastructure module for Omnixys microservices.
 
-This package provides a fully integrated Kafka event system for NestJS applications including:
-
-- Kafka producer and consumer services
-- Typed Kafka events
-- Decorator-based event handlers
-- Automatic handler discovery
-- Standardized Kafka message envelope
-- Trace header propagation
-- Central topic registry
-- Configurable Kafka module
+This package provides a fully integrated Cache event system for NestJS applications including:
 
 The package is designed as a reusable infrastructure layer for the Omnixys platform.
 
@@ -19,36 +10,36 @@ The package is designed as a reusable infrastructure layer for the Omnixys platf
 
 # Features
 
-- Configurable Kafka client via `KafkaModule.forRoot()`
-- Typed Kafka event registry (topic → payload)
+- Configurable Cache client via `CacheModule.forRoot()`
+- Typed Cache event registry (topic → payload)
 - Decorator-based event handlers
 - Automatic handler discovery
-- Central Kafka topic registry
+- Central Cache topic registry
 - Standardized event envelope
-- Trace propagation via Kafka headers
+- Trace propagation via Cache headers
 - Graceful shutdown handling
-- Production-ready KafkaJS configuration
+- Production-ready CacheJS configuration
 
 ---
 
 # Installation
 
 ```bash
-pnpm add @omnixys/kafka
+pnpm add @omnixys/cache
 ````
 
 ---
 
 # Basic Usage
 
-## Register Kafka Module
+## Register Cache Module
 
 ```ts
-import { KafkaModule } from "@omnixys/kafka";
+import { CacheModule } from "@omnixys/cache";
 
 @Module({
   imports: [
-    KafkaModule.forRoot({
+    CacheModule.forRoot({
       clientId: "invitation-service",
       brokers: ["localhost:9092"],
       groupId: "invitation-consumer",
@@ -62,18 +53,18 @@ export class AppModule {}
 
 # Publishing Events
 
-Use the `KafkaProducerService` to publish events.
+Use the `CacheProducerService` to publish events.
 
 ```ts
-import { KafkaProducerService, KafkaTopics } from "@omnixys/kafka";
+import { CacheProducerService, CacheTopics } from "@omnixys/cache";
 
 @Injectable()
 export class InvitationPublisher {
-  constructor(private readonly kafka: KafkaProducerService) {}
+  constructor(private readonly cache: CacheProducerService) {}
 
   async deleteInvitation(invitationId: string) {
-    await this.kafka.send(
-      KafkaTopics.invitation.deleteInvitation,
+    await this.cache.send(
+      CacheTopics.invitation.deleteInvitation,
       {
         invitationId
       },
@@ -87,24 +78,24 @@ export class InvitationPublisher {
 
 # Consuming Events
 
-Kafka event handlers are defined using decorators.
+Cache event handlers are defined using decorators.
 
 ```ts
 import {
-  KafkaHandler,
-  KafkaEvent,
-  KafkaTopics,
-  KafkaEventContext,
-} from "@omnixys/kafka";
+  CacheHandler,
+  CacheEvent,
+  CacheTopics,
+  CacheEventContext,
+} from "@omnixys/cache";
 
-@KafkaHandler("InvitationHandler")
+@CacheHandler("InvitationHandler")
 export class InvitationHandler {
 
-  @KafkaEvent(KafkaTopics.invitation.deleteInvitation)
+  @CacheEvent(CacheTopics.invitation.deleteInvitation)
   async handleDeleteInvitation(
     topic: string,
     payload: { invitationId: string },
-    context: KafkaEventContext
+    context: CacheEventContext
   ) {
     console.log("Deleting invitation:", payload.invitationId);
   }
@@ -116,9 +107,9 @@ The handler will be automatically discovered and registered.
 
 ---
 
-# Kafka Event Envelope
+# Cache Event Envelope
 
-All Kafka messages follow a standardized envelope structure.
+All Cache messages follow a standardized envelope structure.
 
 ```json
 {
@@ -135,12 +126,12 @@ This ensures consistency across services.
 
 ---
 
-# Kafka Topics
+# Cache Topics
 
-Kafka topics are centrally defined:
+Cache topics are centrally defined:
 
 ```ts
-export const KafkaTopics = {
+export const CacheTopics = {
   ticket: {
     deleteTickets: "ticket.delete.user"
   },
@@ -158,13 +149,13 @@ export const KafkaTopics = {
 
 ---
 
-# Typed Kafka Events
+# Typed Cache Events
 
-The package supports typed Kafka events through an event registry.
+The package supports typed Cache events through an event registry.
 
 ```ts
-export interface KafkaEventRegistry {
-  [KafkaTopics.invitation.deleteInvitation]: {
+export interface CacheEventRegistry {
+  [CacheTopics.invitation.deleteInvitation]: {
     invitationId: string
   }
 }
@@ -175,8 +166,8 @@ This enables compile-time validation of event payloads.
 Example:
 
 ```ts
-await kafka.send(
-  KafkaTopics.invitation.deleteInvitation,
+await cache.send(
+  CacheTopics.invitation.deleteInvitation,
   {
     invitationId: "abc123"
   }
@@ -187,9 +178,9 @@ Invalid payloads will fail during TypeScript compilation.
 
 ---
 
-# Kafka Headers
+# Cache Headers
 
-The system automatically attaches standardized Kafka headers.
+The system automatically attaches standardized Cache headers.
 
 Example headers:
 
@@ -216,22 +207,22 @@ The internal event flow looks like this:
 ```
 Service
    ↓
-KafkaProducerService
+CacheProducerService
    ↓
-Kafka
+Cache
    ↓
-KafkaConsumerService
+CacheConsumerService
    ↓
-KafkaEventDispatcher
+CacheEventDispatcher
    ↓
-@KafkaEvent handler
+@CacheEvent handler
 ```
 
 ---
 
 # Graceful Shutdown
 
-The Kafka module automatically disconnects producer and consumer instances when the NestJS application shuts down.
+The Cache module automatically disconnects producer and consumer instances when the NestJS application shuts down.
 
 Supported signals:
 
