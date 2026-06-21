@@ -60,10 +60,10 @@
     "@nestjs/cli": "^11.0.21",
     "@nestjs/common": "latest",
     "@nestjs/core": "^11.1.19",
+    "@omnixys/contracts": "file:../contracts",
     "@omnixys/context": "file:../context",
     "@omnixys/logger": "file:../logger",
     "@omnixys/observability": "^1.0.0",
-    "@omnixys/shared": "^1.0.0",
     "@omnixys/security": "^1.0.0",
     "@semantic-release/changelog": "^6.0.3",
     "@semantic-release/commit-analyzer": "^13.0.1",
@@ -86,10 +86,10 @@
   "peerDependencies": {
     "@nestjs/common": "^11.1.17",
     "@nestjs/core": "^11.1.19",
+    "@omnixys/contracts": "^1.0.0",
     "@omnixys/context": "^1.0.0",
     "@omnixys/logger": "^1.0.0",
     "@omnixys/observability": "^1.0.0",
-    "@omnixys/security": "^1.0.0",
-    "@omnixys/shared": "^1.0.0"
+    "@omnixys/security": "^1.0.0"
   }
 }
