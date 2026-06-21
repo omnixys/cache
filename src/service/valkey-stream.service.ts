@@ -1,5 +1,6 @@
 import { ValkeyService } from './valkey.service.js';
-import { Injectable } from '@nestjs/common';
+import { Injectable, Optional } from '@nestjs/common';
+import { OmnixysLogger } from '@omnixys/logger';
 import { CacheObservabilityService } from '@omnixys/observability';
 
 export interface StreamMessage<T = unknown> {
@@ -12,6 +13,7 @@ export class ValkeyStreamService {
   constructor(
     private readonly valkey: ValkeyService,
     private readonly observability: CacheObservabilityService,
+    @Optional() private readonly logger?: OmnixysLogger,
   ) {}
 
   /**
@@ -23,7 +25,9 @@ export class ValkeyStreamService {
         MKSTREAM: true,
       });
 
-      console.log(`Stream group created: ${stream} (${group})`);
+      this.logger
+        ?.child(ValkeyStreamService.name)
+        .info('Valkey stream group created', { stream, group });
     } catch (err: any) {
       if (err?.message?.includes('BUSYGROUP')) {
         // already exists → ignore

@@ -1,6 +1,7 @@
 import { DelayedJobRegistryService } from '../delay/delayed-job-registry.service.js';
 import { DelayedJobService } from '../delay/delayed-job.service.js';
 import { DelayedJobWorker } from '../delay/delayed-job.worker.js';
+import { CacheInvalidationService } from '../service/cache-invalidation.service.js';
 import { ValkeyLockService } from '../service/valkey-lock.service.js';
 import { ValkeyPubSubService } from '../service/valkey-pubsub.service.js';
 import { ValkeyRateLimitService } from '../service/valkey-rate-limit.service.js';
@@ -30,7 +31,6 @@ import { DiscoveryModule } from '@nestjs/core';
 import {
   CacheMetricsService,
   CacheObservabilityService,
-  ObservabilityModule,
 } from '@omnixys/observability';
 import { createClient, type ValkeyClientType } from '@valkey/client';
 
@@ -71,20 +71,25 @@ function createSerializerProvider(): Provider<CacheSerializer> {
   };
 }
 
-function createBaseProviders(): Provider[] {
-  return [
+function createBaseProviders(worker: boolean): Provider[] {
+  const providers: Provider[] = [
     createSerializerProvider(),
     ValkeyService,
     ValkeyLockService,
     ValkeyRateLimitService,
     ValkeyStreamService,
     ValkeyPubSubService,
+    CacheInvalidationService,
     CacheObservabilityService,
     CacheMetricsService,
     DelayedJobService,
-    DelayedJobWorker,
-    DelayedJobRegistryService,
   ];
+
+  if (worker) {
+    providers.push(DelayedJobWorker, DelayedJobRegistryService);
+  }
+
+  return providers;
 }
 
 function createSyncClientProviders(options: ValkeyModuleOptions): Provider[] {
@@ -99,7 +104,7 @@ function createSyncClientProviders(options: ValkeyModuleOptions): Provider[] {
     },
   ];
 
-  if (options.pubSub?.enabled) {
+  if (options.pubSub?.enabled || options.invalidation?.enabled) {
     providers.push(
       {
         provide: VALKEY_PUB,
@@ -109,6 +114,11 @@ function createSyncClientProviders(options: ValkeyModuleOptions): Provider[] {
         provide: VALKEY_SUB,
         useFactory: async () => createConnectedClient(options),
       },
+    );
+  } else {
+    providers.push(
+      { provide: VALKEY_PUB, useValue: null },
+      { provide: VALKEY_SUB, useValue: null },
     );
   }
 
@@ -165,7 +175,7 @@ function createAsyncClientProviders(): Provider[] {
     {
       provide: VALKEY_PUB,
       useFactory: async (options: ValkeyModuleOptions) => {
-        if (!options.pubSub?.enabled) {
+        if (!options.pubSub?.enabled && !options.invalidation?.enabled) {
           return null;
         }
 
@@ -176,7 +186,7 @@ function createAsyncClientProviders(): Provider[] {
     {
       provide: VALKEY_SUB,
       useFactory: async (options: ValkeyModuleOptions) => {
-        if (!options.pubSub?.enabled) {
+        if (!options.pubSub?.enabled && !options.invalidation?.enabled) {
           return null;
         }
 
@@ -191,19 +201,14 @@ function createAsyncClientProviders(): Provider[] {
 @Module({})
 export class ValkeyModule {
   static forRoot(options: ValkeyModuleOptions): DynamicModule {
-    const workerProviders: Provider[] = options.worker
-      ? [DelayedJobWorker]
-      : [];
-
     const providers = [
       ...createSyncClientProviders(options),
-      ...createBaseProviders(),
-      ...workerProviders,
+      ...createBaseProviders(options.worker === true),
     ];
 
     return {
       module: ValkeyModule,
-      imports: [ObservabilityModule, DiscoveryModule],
+      imports: [DiscoveryModule],
       providers,
       exports: [
         VALKEY_OPTIONS,
@@ -216,8 +221,11 @@ export class ValkeyModule {
         ValkeyRateLimitService,
         ValkeyStreamService,
         ValkeyPubSubService,
+        CacheInvalidationService,
         CacheMetricsService,
+        CacheObservabilityService,
         DelayedJobService,
+        ...(options.worker ? [DelayedJobWorker] : []),
       ],
     };
   }
@@ -232,16 +240,12 @@ export class ValkeyModule {
     const providers = [
       ...asyncProviders,
       ...(options.extraProviders ?? []),
-      ...createBaseProviders(),
+      ...createBaseProviders(options.worker === true),
     ];
 
     return {
       module: ValkeyModule,
-      imports: [
-        ...(options.imports ?? []),
-        ObservabilityModule,
-        DiscoveryModule,
-      ],
+      imports: [...(options.imports ?? []), DiscoveryModule],
       providers,
       exports: [
         VALKEY_OPTIONS,
@@ -254,8 +258,11 @@ export class ValkeyModule {
         ValkeyRateLimitService,
         ValkeyStreamService,
         ValkeyPubSubService,
+        CacheInvalidationService,
         CacheObservabilityService,
+        CacheMetricsService,
         DelayedJobService,
+        ...(options.worker ? [DelayedJobWorker] : []),
       ],
     };
   }

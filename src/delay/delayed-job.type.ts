@@ -15,6 +15,33 @@ export interface DelayedJobEnvelope<K extends JobKey = JobKey> {
 
   retries: number;
   maxRetries: number;
+  retryDelayMs?: number;
+  stream?: string;
+  context?: DelayedJobContext;
+}
+
+export interface DelayedJobContext {
+  requestId: string;
+  correlationId: string;
+  traceId?: string;
+  actorId?: string;
+  tenantId?: string;
+}
+
+export type DelayedJobState =
+  | 'canceled'
+  | 'completed'
+  | 'failed'
+  | 'running'
+  | 'scheduled';
+
+export interface DelayedJobStatus<
+  K extends JobKey = JobKey,
+> extends DelayedJobEnvelope<K> {
+  status: DelayedJobState;
+  createdAt: number;
+  updatedAt: number;
+  lastError?: string;
 }
 
 export interface DelayedJobSchedule<K extends JobKey = JobKey> {
@@ -25,6 +52,7 @@ export interface DelayedJobSchedule<K extends JobKey = JobKey> {
 
   retries?: number;
   maxRetries?: number;
+  retryDelayMs?: number;
 }
 
 export type DelayedJobKeysType = typeof DelayedJobKeys;

@@ -2,8 +2,9 @@
 
 import { DelayedJobRegistry } from './delayed-job-registry.js';
 import { DELAYED_JOB_HANDLER, DELAYED_JOB_METADATA } from './delayed-job.constants.js';
-import { Injectable, Logger, OnModuleInit } from '@nestjs/common';
+import { Injectable, OnModuleInit, Optional } from '@nestjs/common';
 import { DiscoveryService, MetadataScanner, Reflector } from '@nestjs/core';
+import { OmnixysLogger } from '@omnixys/logger';
 
 interface HandlerEntry {
   instance: Record<string, any>;
@@ -12,18 +13,20 @@ interface HandlerEntry {
 
 @Injectable()
 export class DelayedJobRegistryService implements OnModuleInit {
-  private readonly logger = new Logger(DelayedJobRegistryService.name);
   private readonly handlers = new Map<keyof DelayedJobRegistry, HandlerEntry>();
 
   constructor(
     private readonly discovery: DiscoveryService,
     private readonly scanner: MetadataScanner,
     private readonly reflector: Reflector,
+    @Optional() private readonly logger?: OmnixysLogger,
   ) {}
 
   onModuleInit() {
     this.scanHandlers();
-    this.logger.log(`Delayed job handlers registered: ${this.handlers.size}`);
+    this.logger
+      ?.child(DelayedJobRegistryService.name)
+      .info('Delayed job handlers registered', { handlerCount: this.handlers.size });
   }
 
   private scanHandlers() {
@@ -62,9 +65,10 @@ export class DelayedJobRegistryService implements OnModuleInit {
 
         this.handlers.set(type, { instance, methodName });
 
-        this.logger.debug(
-          `Registered delayed job → type=${type} handler=${instance.constructor.name}.${methodName}`,
-        );
+        this.logger?.child(DelayedJobRegistryService.name).debug('Delayed job handler registered', {
+          jobType: type,
+          handler: `${instance.constructor.name}.${methodName}`,
+        });
       });
     }
   }
@@ -76,8 +80,10 @@ export class DelayedJobRegistryService implements OnModuleInit {
     const entry = this.handlers.get(type);
 
     if (!entry) {
-      this.logger.warn(`No handler for job type=${type}`);
-      return;
+      this.logger
+        ?.child(DelayedJobRegistryService.name)
+        .error('Delayed job handler is missing', { jobType: type });
+      throw new Error(`No delayed job handler registered for "${type}"`);
     }
 
     const method = entry.instance[entry.methodName] as (

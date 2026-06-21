@@ -31,7 +31,10 @@
     "registry": "https://npm.pkg.github.com"
   },
   "scripts": {
+    "prebuild": "node -e \"require('node:fs').rmSync('dist', { recursive: true, force: true })\"",
     "build": "tsc -p tsconfig.json",
+    "test": "pnpm run build && pnpm run test:types && node --test test/*.test.mjs",
+    "test:types": "tsc -p tsconfig.type-tests.json",
     "clean": "rimraf dist",
     "build:tsup": "tsup src/index.ts --format esm,cjs --dts",
     "patch": "pnpm version patch",
@@ -57,6 +60,8 @@
     "@nestjs/cli": "^11.0.21",
     "@nestjs/common": "latest",
     "@nestjs/core": "^11.1.19",
+    "@omnixys/context": "file:../context",
+    "@omnixys/logger": "file:../logger",
     "@omnixys/observability": "^1.0.0",
     "@omnixys/shared": "^1.0.0",
     "@omnixys/security": "^1.0.0",
@@ -81,6 +86,8 @@
   "peerDependencies": {
     "@nestjs/common": "^11.1.17",
     "@nestjs/core": "^11.1.19",
+    "@omnixys/context": "^1.0.0",
+    "@omnixys/logger": "^1.0.0",
     "@omnixys/observability": "^1.0.0",
     "@omnixys/security": "^1.0.0",
     "@omnixys/shared": "^1.0.0"

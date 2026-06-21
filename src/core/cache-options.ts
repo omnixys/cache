@@ -8,6 +8,11 @@ export interface ValkeyStreamOptions {
   enabled?: boolean;
 }
 
+export interface ValkeyInvalidationOptions {
+  enabled?: boolean;
+  channel?: string;
+}
+
 export interface ValkeyModuleOptions {
   serviceName: string;
   url?: string;
@@ -20,6 +25,7 @@ export interface ValkeyModuleOptions {
   keyPrefix?: string;
   pubSub?: ValkeyPubSubOptions;
   streams?: ValkeyStreamOptions;
+  invalidation?: ValkeyInvalidationOptions;
   worker?: boolean;
 }
 
@@ -41,4 +47,6 @@ export interface ValkeyModuleAsyncOptions extends Pick<
   ) => ValkeyModuleOptions | Promise<ValkeyModuleOptions>;
 
   extraProviders?: Provider[];
+  /** Static topology flag used because async factory results cannot alter module providers. */
+  worker?: boolean;
 }
