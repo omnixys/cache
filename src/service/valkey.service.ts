@@ -179,6 +179,31 @@ export class ValkeyService implements OnModuleDestroy {
     });
   }
 
+  /**
+   * Atomically stores a raw value only when the namespaced key does not exist.
+   * Useful for replay guards, idempotency keys, and other first-writer-wins flows.
+   */
+  async rawSetIfAbsent(key: string, value: string, ttlSeconds: number): Promise<boolean> {
+    assertTtl(ttlSeconds);
+    const namespacedKey = this.key(key);
+    return this.withOperation(() =>
+      this.observability.trace('set_if_absent', namespacedKey, async (span) => {
+        span?.setAttribute('cache.ttl_seconds', ttlSeconds);
+        const result = await this.client.set(namespacedKey, value, {
+          EX: ttlSeconds,
+          NX: true,
+        });
+        const stored = result === 'OK';
+        span?.setAttribute('cache.stored', stored);
+        if (stored) {
+          this.metrics.write();
+          await this.invalidation?.publish(namespacedKey, 'set');
+        }
+        return stored;
+      }),
+    );
+  }
+
   status(): CacheConnectionStatus {
     if (this.closing) return 'closing';
     if (!this.client?.isOpen) return 'offline';

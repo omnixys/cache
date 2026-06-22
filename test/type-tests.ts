@@ -17,5 +17,12 @@ void token;
 const value: Promise<TypedValue | null> = cache.getValue(key, 'token');
 void value;
 
+const acquired: Promise<boolean> = cache.rawSetIfAbsent(
+  'replay:ticket-1:1',
+  '1',
+  120,
+);
+void acquired;
+
 // @ts-expect-error enabled is required by the typed key contract
 void cache.setValue(key, { id: 'invalid' });

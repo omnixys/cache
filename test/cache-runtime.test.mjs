@@ -128,6 +128,22 @@ test('cache drain waits for active writes before resolving', async () => {
   assert.equal(drained, true);
 });
 
+test('atomic set-if-absent permits only the first replay guard', async () => {
+  const client = createClient();
+  const service = createService(client);
+
+  assert.equal(
+    await service.rawSetIfAbsent('replay:ticket-1:2', '1', 120),
+    true,
+  );
+  assert.equal(
+    await service.rawSetIfAbsent('replay:ticket-1:2', '1', 120),
+    false,
+  );
+  assert.equal(client.values.get('test:replay:ticket-1:2'), '1');
+  assert.equal(client.ttls.get('test:replay:ticket-1:2'), 120);
+});
+
 test('distributed invalidation propagates canonical request identifiers', async () => {
   const published = [];
   let receive;
@@ -304,6 +320,7 @@ function createClient() {
       return values.get(key) ?? null;
     },
     async set(key, value, options) {
+      if (options?.NX && values.has(key)) return null;
       values.set(key, value);
       if (options?.EX) ttls.set(key, options.EX);
       return 'OK';
