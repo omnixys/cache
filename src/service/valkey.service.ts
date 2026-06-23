@@ -154,6 +154,15 @@ export class ValkeyService implements OnModuleDestroy {
     );
   }
 
+  async ttl(key: string): Promise<number> {
+    const namespacedKey = this.key(key);
+    return this.withOperation(async () =>
+      this.observability.trace('ttl', namespacedKey, async () =>
+        this.client.ttl(namespacedKey),
+      ),
+    );
+  }
+
   async increment(key: string): Promise<number> {
     const namespacedKey = this.key(key);
     return this.withOperation(async () =>

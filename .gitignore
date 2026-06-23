@@ -16,6 +16,7 @@
 
 # dependencies
 node_modules/
+node_profiles/
 
 # build output
 dist/
