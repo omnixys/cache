@@ -3,6 +3,16 @@
 All notable changes in this project will be documented in this file.
 
 
+## [2.0.1](https://github.com/omnixys/cache/compare/v2.0.0...v2.0.1) (2026-06-23)
+
+### Dep
+
+* **Dep:** update dependecies ([](https://github.com/omnixys/cache/commit/719ab128aa5213abae34196aae9fa0ba8bd5e3b3))
+
+### Other
+
+* **Other:** Merge branch 'main' of https://github.com/omnixys/cache ([](https://github.com/omnixys/cache/commit/03316ee05f3343b2933bc551c39b015c2b656520))
+
 ## [2.0.0](https://github.com/omnixys/cache/compare/v1.0.0...v2.0.0) (2026-06-23)
 
 ### Cache
