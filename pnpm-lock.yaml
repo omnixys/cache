@@ -46,8 +46,8 @@ importers:
         specifier: ^2.0.0
         version: 2.0.0(b7ac4cd3bf9bd759fc19315c3a173bcc)
       '@omnixys/security':
-        specifier: ^2.0.0
-        version: 2.0.0(9a6db0650f982b6812be051ff84f4153)
+        specifier: ^2.0.1
+        version: 2.0.1(9a6db0650f982b6812be051ff84f4153)
       '@semantic-release/changelog':
         specifier: ^6.0.3
         version: 6.0.3(semantic-release@25.0.3(typescript@5.9.3))
@@ -857,8 +857,8 @@ packages:
       '@omnixys/contracts': ^2.0.0
       fastify: ^5.8.2
 
-  '@omnixys/security@2.0.0':
-    resolution: {integrity: sha512-AwNtlcDfyHupF/fNh5WPJ0caVBxK6uBNwwb3BVjmxpbu+njBF/KHh58kChn1D0jQmD2txT7ThylKutE08pEYIA==, tarball: https://npm.pkg.github.com/download/@omnixys/security/2.0.0/6f22ba25e75d13086500a94b6120d5f2f954d12b}
+  '@omnixys/security@2.0.1':
+    resolution: {integrity: sha512-hxBMUotYKeP6b8OFSyR/ywDaVbLiTrG9Erjrq+d3ZMXsu5mHEGrm1Np3GqXFSslAQdU66Bpp3yi4Gt025JONow==, tarball: https://npm.pkg.github.com/download/@omnixys/security/2.0.1/754f6e8af2312a8d3dcbacb4a21f868231ea96d9}
     peerDependencies:
       '@fastify/cookie': ^11.0.0
       '@nestjs/common': ^10 || ^11
@@ -5287,7 +5287,7 @@ snapshots:
       - '@opentelemetry/core'
       - supports-color
 
-  '@omnixys/security@2.0.0(9a6db0650f982b6812be051ff84f4153)':
+  '@omnixys/security@2.0.1(9a6db0650f982b6812be051ff84f4153)':
     dependencies:
       '@fastify/cookie': 11.0.2
       '@nestjs/axios': 4.0.1(@nestjs/common@11.1.19(reflect-metadata@0.2.2)(rxjs@7.8.2))(axios@1.15.2)(rxjs@7.8.2)
