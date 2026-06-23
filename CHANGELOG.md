@@ -3,6 +3,15 @@
 All notable changes in this project will be documented in this file.
 
 
+## [2.0.0](https://github.com/omnixys/cache/compare/v1.0.0...v2.0.0) (2026-06-23)
+
+### Cache
+
+* **Cache:** declare runtime peer dependencies ([](https://github.com/omnixys/cache/commit/f53ee1bf4ebeba77d24594a7ae03a3dc97064581))
+* **Cache:** add atomic set-if-absent primitive ([](https://github.com/omnixys/cache/commit/85d648e2b238bff65311c216bfe8dd7cfd90e683))
+* **Cache:** add lifecycle and reliable delayed jobs ([](https://github.com/omnixys/cache/commit/f0cba3fb6e1916fb81a6e9203255e5326c09a55c))
+* **Cache:** consume canonical contracts ([](https://github.com/omnixys/cache/commit/393867b6b9e3dd05547e209f190b5311e1a84fdf))
+
 ## 1.0.0 (2026-04-25)
 
 ### ⚠ BREAKING CHANGE
